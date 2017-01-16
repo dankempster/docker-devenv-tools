@@ -1,0 +1,37 @@
+version: "2"
+
+services:
+
+  composer:
+    image: dankempster/composer:latest
+    volumes:
+       - composer:/composer
+       - composer_cache:/composer-cache
+
+  composer_alpine:
+    image: dankempster/composer:alpine
+    volumes:
+      - composer_alpine:/composer
+      - composer_alpine_cache:/composer-cache
+
+  bower:
+    image: dankempster/bower:latest
+    volumes:
+      - bower:/bower
+
+  webpack:
+    image: dankempster/webpack:latest
+
+volumes:
+    bower:
+        driver: local
+
+    composer_alpine:
+        driver: local
+    composer_alpine_cache:
+        driver: local
+
+    composer:
+        driver: local
+    composer_cache:
+        driver: local
