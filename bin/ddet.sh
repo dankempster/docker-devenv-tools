@@ -30,9 +30,21 @@ init () {
     return 0
 }
 
+adminer () {
+    docker-compose -f ddet/docker-compose.adminer.yml up -d
+}
+
 while :
 do
     case "$1" in
+        adminer)
+            adminer
+            exit 0
+        ;;
+        all)
+            adminer
+            exit 0
+        ;;
         init)
             init
             exit 0

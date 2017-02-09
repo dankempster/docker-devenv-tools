@@ -1,0 +1,18 @@
+version: "2"
+
+services:
+  adminer:
+    image: clue/adminer
+    environment:
+      - VIRTUAL_HOST=adminer.dev
+    networks:
+      - tools
+      - proxy
+
+networks:
+  tools:
+    external:
+      name: ddet_tools
+  proxy:
+    external:
+      name: dockernginxproxy_net
