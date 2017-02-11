@@ -3,23 +3,29 @@
 alpine=""
 entryPoint=""
 wantedVersion="latest"
+volumeVersion="_7"
+
+volumeComposer="composer${volumeVersion}"
+volumeComposerCache="composer${volumeVersion}_cache"
 
 #set -x
 
 display_help () {
 #    set +x
 
-    echo "Bowers Docker Wrapper"
+    echo "Developer Environment Tools"
     echo ""
-    echo "USAGE: composer [-achnv] [--] BOWER-ARGS"
+    echo "USAGE: ddet CMD"
     echo ""
-    echo "    -a | --alpine   : Use an Alpine based image."
-    echo "    -c | --cmd      : Alternative bash command to run instead of bower"
-    echo "                      Useful for testing and debugging."
-    echo "    -h | --help     : Display this help."
-    echo "    -n | --no-alpine: Use ubuntu based image (Default)."
-    echo "    -v | --verbose  : Be verbose."
+    echo "Possible commands"
+    echo "    init : Initiates the environment. Creating Docker volumes and networks"
     echo ""
+
+    return 0
+}
+
+init () {
+    docker-compose -f ddet/docker-compose.yml up -d
 
     return 0
 }
@@ -27,9 +33,9 @@ display_help () {
 while :
 do
     case "$1" in
-        -a | --alpine)
-            alpine="-alpine"
-            shift 1
+        init)
+            init
+            exit 0
         ;;
         -c | --cmd)
             entryPoint=$2
@@ -65,24 +71,15 @@ do
             shift
             break;
         ;;
-        -*) # Start or Composer's arguments
-            break;
+         -*)
+            echo "Error: Unknown option: $1" >&2
+            display_help
+            exit 1
         ;;
         *)  # No more options
-            break
+            display_help
+            exit 1
         ;;
     esac
 done
-
-tag="${wantedVersion}${alpine}"
-
-if [ "$tag" = "latest-alpine" ]; then
-    tag="alpine"
-fi
-
-if [ "$entryPoint" = "" ]; then
-    docker run --rm -u www-data:www-data -v $(pwd):/project -v bower:/bower -w /project dankempster/bower:${tag} "$@"
-else
-    docker run --rm --entrypoint="$entryPoint" -i -v $(pwd):/project -v bower:/bower -w /project dankempster/bower:${tag} "$@"
-fi
 
