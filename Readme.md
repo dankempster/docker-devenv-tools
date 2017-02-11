@@ -10,7 +10,6 @@ This project solves two situations for me:
 
  - [Composer](https://getcomposer.org)
  - [Bower](https://bower.io)
- - [WebPack](https://webpack.js.org)
  
 For each global container an executable script is provided in [bin/](bin/).
 These scripts execute simple ```docker run``` commands to invoke the containers, mounting your current path within the container, before running your command.
