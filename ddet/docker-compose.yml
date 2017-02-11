@@ -1,0 +1,25 @@
+version: "2"
+
+volumes:
+    bower:
+        driver: local
+
+    composer_alpine:
+        driver: local
+    composer_alpine_cache:
+        driver: local
+
+    composer:
+        driver: local
+    composer_cache:
+        driver: local
+
+    composer_7_alpine:
+        driver: local
+    composer_7_alpine_cache:
+        driver: local
+
+    composer_7:
+        driver: local
+    composer_7_cache:
+        driver: local
