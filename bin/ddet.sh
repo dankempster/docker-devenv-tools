@@ -18,7 +18,10 @@ display_help () {
     echo "USAGE: ddet CMD"
     echo ""
     echo "Possible commands"
-    echo "    init : Initiates the environment. Creating Docker volumes and networks"
+    echo "    all     : Start all containers"
+    echo "    adminer : Start the adminer container"
+    echo "    init    : Initiates the environment, creating the Docker volumes"
+    echo "              and networks."
     echo ""
 
     return 0
