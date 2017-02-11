@@ -1,0 +1,3 @@
+[submodule "revsere-proxy"]
+	path = reverse-proxy
+	url = https://github.com/dankempster/docker-nginx-proxy.git

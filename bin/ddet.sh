@@ -22,6 +22,8 @@ display_help () {
     echo "    adminer : Start the adminer container"
     echo "    init    : Initiates the environment, creating the Docker volumes"
     echo "              and networks."
+    echo "    proxy   : Start the Nginx reverse proxy. Auto-started by some"
+    echo "              other tools."
     echo "    status  : Show status of containers"
     echo ""
     echo ""
@@ -36,6 +38,8 @@ init () {
 }
 
 adminer () {
+    reverse_proxy
+
     docker-compose -f ddet/docker-compose.adminer.yml up -d
 }
 
@@ -46,6 +50,14 @@ docker_compose_ps () {
         ps
 }
 
+reverse_proxy () {
+    docker-compose \
+        -f ./reverse-proxy/docker-compose.yml \
+        up -d
+
+    return 0
+}
+
 while :
 do
     case "$1" in
@@ -54,11 +66,17 @@ do
             exit 0
         ;;
         all)
+            reverse_proxy
             adminer
+            docker_compose_ps
             exit 0
         ;;
         init)
             init
+            exit 0
+        ;;
+        proxy)
+            reverse_proxy
             exit 0
         ;;
         status)

@@ -15,4 +15,4 @@ networks:
       name: ddet_tools
   proxy:
     external:
-      name: dockernginxproxy_net
+      name: reverseproxy_net
