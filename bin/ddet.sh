@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-alpine=""
-entryPoint=""
-wantedVersion="latest"
-volumeVersion="_7"
-
-volumeComposer="composer${volumeVersion}"
-volumeComposerCache="composer${volumeVersion}_cache"
-
 #set -x
 
 display_help () {
@@ -82,40 +74,6 @@ do
         status)
             docker_compose_ps
             exit 0
-        ;;
-        -c | --cmd)
-            entryPoint=$2
-            shift 2;
-        ;;
-        -h | --help)
-            display_help
-            # no shifting needed here, we're done.
-            exit 0
-        ;;
-        -n | --no-alpine)
-            alpine=""
-            shift 1
-        ;;
-        -v | --verbose)
-            #  It's better to assign a string, than a number like "verbose=1"
-            #  because if you're debugging the script with "bash -x" code like this:
-            #
-            #    if [ "$verbose" ] ...
-            #
-            #  You will see:
-            #
-            #    if [ "verbose" ] ...
-            #
-              #  Instead of cryptic
-            #
-            #    if [ "1" ] ...
-            #
-            verbose="verbose"
-            shift
-        ;;
-        --) # End of all options
-            shift
-            break;
         ;;
          -*)
             echo "Error: Unknown option: $1" >&2
