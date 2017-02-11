@@ -98,6 +98,22 @@ if [ "$tag" = "latest-alpine" ]; then
     tag="alpine"
 fi
 
+if [ "$verbose" ]; then
+    echo "PHP: ${wantedVersion}"
+    if [ "$alpine" ]; then
+        echo "Alpine: Yes";
+    else
+        echo "Alpine: No";
+    fi
+    echo "Tag: ${tag}"
+    if [ "$entryPoint" ]; then
+        echo "Entry Point: $entryPoint"
+    fi
+    echo "Volumes:"
+    echo "  $volumeComposer"
+    echo "  $volumeComposerCache"
+fi
+
 if [ "$entryPoint" = "" ]; then
     docker run --rm -u www-data:www-data -v $(pwd):/project -v ${volumeComposer}:/composer -v ${volumeComposerCache}:/composer-cache -w /project dankempster/composer:${tag} "$@"
 else

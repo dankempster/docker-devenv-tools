@@ -80,6 +80,18 @@ if [ "$tag" = "latest-alpine" ]; then
     tag="alpine"
 fi
 
+if [ "$verbose" ]; then
+    if [ "$alpine" ]; then
+        echo "Alpine: Yes";
+    else
+        echo "Alpine: No";
+    fi
+    echo "Tag: ${tag}"
+    if [ "$entryPoint" ]; then
+        echo "Entry Point: $entryPoint"
+    fi
+fi
+
 if [ "$entryPoint" = "" ]; then
     docker run --rm -u www-data:www-data -v $(pwd):/project -v bower:/bower -w /project dankempster/bower:${tag} "$@"
 else
