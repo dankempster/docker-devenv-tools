@@ -22,6 +22,8 @@ display_help () {
     echo "    adminer : Start the adminer container"
     echo "    init    : Initiates the environment, creating the Docker volumes"
     echo "              and networks."
+    echo "    status  : Show status of containers"
+    echo ""
     echo ""
 
     return 0
@@ -37,6 +39,13 @@ adminer () {
     docker-compose -f ddet/docker-compose.adminer.yml up -d
 }
 
+docker_compose_ps () {
+    docker-compose \
+        -f ddet/docker-compose.yml \
+        -f ddet/docker-compose.adminer.yml \
+        ps
+}
+
 while :
 do
     case "$1" in
@@ -50,6 +59,10 @@ do
         ;;
         init)
             init
+            exit 0
+        ;;
+        status)
+            docker_compose_ps
             exit 0
         ;;
         -c | --cmd)
