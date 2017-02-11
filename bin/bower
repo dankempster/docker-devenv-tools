@@ -1,1 +1,88 @@
-/Users/dan/Projects/ddef/bin/bower.sh
+#!/usr/bin/env bash
+
+alpine=""
+entryPoint=""
+wantedVersion="latest"
+
+#set -x
+
+display_help () {
+#    set +x
+
+    echo "Bowers Docker Wrapper"
+    echo ""
+    echo "USAGE: composer [-achnv] [--] BOWER-ARGS"
+    echo ""
+    echo "    -a | --alpine   : Use an Alpine based image."
+    echo "    -c | --cmd      : Alternative bash command to run instead of bower"
+    echo "                      Useful for testing and debugging."
+    echo "    -h | --help     : Display this help."
+    echo "    -n | --no-alpine: Use ubuntu based image (Default)."
+    echo "    -v | --verbose  : Be verbose."
+    echo ""
+
+    return 0
+}
+
+while :
+do
+    case "$1" in
+        -a | --alpine)
+            alpine="-alpine"
+            shift 1
+        ;;
+        -c | --cmd)
+            entryPoint=$2
+            shift 2;
+        ;;
+        -h | --help)
+            display_help
+            # no shifting needed here, we're done.
+            exit 0
+        ;;
+        -n | --no-alpine)
+            alpine=""
+            shift 1
+        ;;
+        -v | --verbose)
+            #  It's better to assign a string, than a number like "verbose=1"
+            #  because if you're debugging the script with "bash -x" code like this:
+            #
+            #    if [ "$verbose" ] ...
+            #
+            #  You will see:
+            #
+            #    if [ "verbose" ] ...
+            #
+              #  Instead of cryptic
+            #
+            #    if [ "1" ] ...
+            #
+            verbose="verbose"
+            shift
+        ;;
+        --) # End of all options
+            shift
+            break;
+        ;;
+        -*) # Start or Composer's arguments
+            break;
+        ;;
+        *)  # No more options
+            break
+        ;;
+    esac
+done
+
+tag="${wantedVersion}${alpine}"
+
+if [ "$tag" = "latest-alpine" ]; then
+    tag="alpine"
+fi
+
+if [ "$entryPoint" = "" ]; then
+    docker run --rm -u www-data:www-data -v $(pwd):/project -v bower:/bower -w /project dankempster/bower:${tag} "$@"
+else
+    docker run --rm --entrypoint="$entryPoint" -i -v $(pwd):/project -v bower:/bower -w /project dankempster/bower:${tag} "$@"
+fi
+
