@@ -42,6 +42,8 @@ adminer_loadConfig ()
 
 adminer ()
 {
+    adminer_loadConfig
+    
     docker-compose ${adminerConfig} up -d
 
     return 0
