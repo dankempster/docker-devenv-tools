@@ -129,9 +129,6 @@ while :
 do
     case "$1" in
         adminer)
-            # set up reverse proxy
-            reverseProxy
-
             # start adminer
             adminer
             exit 0
@@ -140,9 +137,6 @@ do
             # initialise volumes
             bower
             composer
-
-            # set up reverse proxy
-            reverseProxy
 
             # start web services
             adminer
