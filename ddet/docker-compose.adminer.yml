@@ -3,14 +3,8 @@ version: "2"
 services:
   adminer:
     image: clue/adminer
-    environment:
-      - VIRTUAL_HOST=adminer.dev
     networks:
-      - tools
-      - proxy
+      - adminer
 
 networks:
-  tools:
-  proxy:
-    external:
-      name: reverseproxy_net
+  adminer:

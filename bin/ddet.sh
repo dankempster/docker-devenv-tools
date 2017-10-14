@@ -2,7 +2,13 @@
 
 #set -x
 
-display_help () {
+adminerConfig="-f ddet/docker-compose.adminer.yml"
+bowerConfig="-f ddet/docker-compose.bower.yml"
+composerConfig="-f ddet/docker-compose.composer.yml"
+reverseProxyConfig="-f reverse-proxy/docker-compose.yml"
+
+display_help ()
+{
 #    set +x
 
     echo "Developer Environment Tools"
@@ -23,30 +29,71 @@ display_help () {
     return 0
 }
 
-composer () {
-    docker-compose -f ddet/docker-compose.composer.yml up -d
+adminer_loadConfig ()
+{
+    if [ -e adminer.override.yml ]; then
+        adminerConfig="${adminerConfig} -f adminer.override.yml"
+    else
+        adminerConfig="${adminerConfig} -f ddet/docker-compose.adminer-proxy.yml"
+    fi
 
     return 0
 }
 
-bower () {
-    docker-compose -f ddet/docker-compose.bower.yml up -d
+adminer ()
+{
+    docker-compose ${adminerConfig} up -d
 
     return 0
 }
 
-adminer () {
-    docker-compose -f ddet/docker-compose.adminer.yml up -d
+bower_loadConfig ()
+{
+    if [ -e bower.override.yml ]; then
+        bowerConfig="${bowerConfig} -f bower.override.yml"
+    fi
 
     return 0
 }
 
-docker_compose_ps () {
+bower ()
+{
+    bower_loadConfig
+
+    docker-compose ${bowerConfig} up -d
+
+    return 0
+}
+
+composer_loadConfig ()
+{
+    if [ -e composer.override.yml ]; then
+        composerConfig="${composerConfig} -f composer.override.yml"
+    fi
+}
+
+composer ()
+{
+    composer_loadConfig
+    
+    docker-compose ${composerConfig} up -d
+
+    return 0
+}
+
+docker_compose_ps ()
+{
     echo "###"
     echo "# Reverse Proxy"
     echo "#"
+
+    adminer_loadConfig
+    bower_loadConfig
+    composer_loadConfig
+    reverseProxy_loadConfig
+
     docker-compose \
-        -f reverse-proxy/docker-compose.yml \
+        ${reverseProxyConfig} \
         ps
 
     echo ""
@@ -54,15 +101,25 @@ docker_compose_ps () {
     echo "# DDET Services"
     echo "#"
     docker-compose \
-        -f ddet/docker-compose.adminer.yml \
-        -f ddet/docker-compose.composer.yml \
-        -f ddet/docker-compose.bower.yml \
+        ${adminerConfig} \
+        ${composerConfig} \
+        ${bowerConfig} \
         ps
 }
 
-reverse_proxy () {
+reverseProxy_loadConfig ()
+{
+    if [ -e adminer.override.yml ]; then
+        reverseProxyConfig="${reverseProxyConfig} -f adminer.override.yml"
+    fi
+}
+
+reverseProxy ()
+{
+    reverseProxy_loadConfig
+
     docker-compose \
-        -f reverse-proxy/docker-compose.yml \
+        ${reverseProxyConfig} \
         up -d
 
     return 0
@@ -73,7 +130,7 @@ do
     case "$1" in
         adminer)
             # set up reverse proxy
-            reverse_proxy
+            reverseProxy
 
             # start adminer
             adminer
@@ -85,7 +142,7 @@ do
             composer
 
             # set up reverse proxy
-            reverse_proxy
+            reverseProxy
 
             # start web services
             adminer
@@ -100,7 +157,7 @@ do
             exit 0
         ;;
         proxy)
-            reverse_proxy
+            reverseProxy
             exit 0
         ;;
 #        ps)
