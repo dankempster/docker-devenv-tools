@@ -1,6 +1,7 @@
 version: "2"
 
 services:
+  adminer:
     environment:
       - VIRTUAL_HOST=adminer.dev
     networks:
