@@ -7,6 +7,11 @@ bowerConfig="-f ddet/docker-compose.bower.yml"
 composerConfig="-f ddet/docker-compose.composer.yml"
 reverseProxyConfig="-f reverse-proxy/docker-compose.yml"
 
+loadedAdminer=0
+loadedBower=0
+loadedComposer=0
+loadedReverseProxy=0
+
 display_help ()
 {
 #    set +x
@@ -31,12 +36,14 @@ display_help ()
 
 adminer_loadConfig ()
 {
-    if [ -e adminer.override.yml ]; then
-        adminerConfig="${adminerConfig} -f adminer.override.yml"
-    else
-        adminerConfig="${adminerConfig} -f ddet/docker-compose.adminer-proxy.yml"
+    if [ $loadedAdminer = 0 ]; then
+        if [ -e adminer.override.yml ]; then
+            adminerConfig="${adminerConfig} -f adminer.override.yml"
+        else
+            adminerConfig="${adminerConfig} -f ddet/docker-compose.adminer-proxy.yml"
+        fi
+        loadedAdminer=1
     fi
-
     return 0
 }
 
