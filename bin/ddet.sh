@@ -118,8 +118,8 @@ docker_compose_ps ()
 
 reverseProxy_loadConfig ()
 {
-    if [ -e adminer.override.yml ]; then
-        reverseProxyConfig="${reverseProxyConfig} -f adminer.override.yml"
+    if [ -e reverse-proxy.override.yml ]; then
+        reverseProxyConfig="${reverseProxyConfig} -f reverse-proxy.override.yml"
     fi
 }
 
