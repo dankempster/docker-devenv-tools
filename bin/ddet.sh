@@ -23,28 +23,46 @@ display_help () {
     return 0
 }
 
-init () {
-    docker-compose -f ddet/docker-compose.yml up -d
+composer () {
+    docker-compose -f ddet/docker-compose.composer.yml up -d
+
+    return 0
+}
+
+bower () {
+    docker-compose -f ddet/docker-compose.bower.yml up -d
 
     return 0
 }
 
 adminer () {
-    reverse_proxy
-
     docker-compose -f ddet/docker-compose.adminer.yml up -d
+
+    return 0
 }
 
 docker_compose_ps () {
+    echo "###"
+    echo "# Reverse Proxy"
+    echo "#"
     docker-compose \
-        -f ddet/docker-compose.yml \
+        -f reverse-proxy/docker-compose.yml \
+        ps
+
+    echo ""
+    echo "###"
+    echo "# DDET Services"
+    echo "#"
+    docker-compose \
         -f ddet/docker-compose.adminer.yml \
+        -f ddet/docker-compose.composer.yml \
+        -f ddet/docker-compose.bower.yml \
         ps
 }
 
 reverse_proxy () {
     docker-compose \
-        -f ./reverse-proxy/docker-compose.yml \
+        -f reverse-proxy/docker-compose.yml \
         up -d
 
     return 0
@@ -54,24 +72,42 @@ while :
 do
     case "$1" in
         adminer)
+            # set up reverse proxy
+            reverse_proxy
+
+            # start adminer
             adminer
             exit 0
         ;;
         all)
+            # initialise volumes
+            bower
+            composer
+
+            # set up reverse proxy
             reverse_proxy
+
+            # start web services
             adminer
+
+            # show result
             docker_compose_ps
             exit 0
         ;;
         init)
-            init
+            bower
+            composer
             exit 0
         ;;
         proxy)
             reverse_proxy
             exit 0
         ;;
-        status)
+#        ps)
+#            docker_compose_ps
+#            exit 0
+#        ;;
+        ps|status)
             docker_compose_ps
             exit 0
         ;;

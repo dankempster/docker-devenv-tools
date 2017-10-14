@@ -11,8 +11,6 @@ services:
 
 networks:
   tools:
-    external:
-      name: ddet_tools
   proxy:
     external:
       name: reverseproxy_net

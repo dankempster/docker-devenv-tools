@@ -1,9 +1,6 @@
 version: "2"
 
 volumes:
-    bower:
-        driver: local
-
     composer_alpine:
         driver: local
     composer_alpine_cache:
@@ -23,6 +20,3 @@ volumes:
         driver: local
     composer_7_cache:
         driver: local
-
-networks:
-    tools:
